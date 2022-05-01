@@ -26,7 +26,7 @@
                     <table class="table table-head-fixed table-hover">
                         <thead>
                             <tr>
-                                <th>Student Number</th>
+                                <th>Student Number/Number Code</th>
                                 <th>First Name</th>
                                 <th>Middle Name</th>
                                 <th>Last Name</th>

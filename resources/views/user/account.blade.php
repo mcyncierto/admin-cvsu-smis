@@ -14,7 +14,7 @@
                     <div class="card-body">
                         <div class="form-group row">
                             <label for="student_number"
-                                class="col-md-4 col-form-label text-md-right">{{ __('Student Number') }}</label>
+                                class="col-md-4 col-form-label text-md-right">{{ __('Number Code') }}</label>
 
                             <div class="col-md-6">
                                 <input id="student_number" type="text"

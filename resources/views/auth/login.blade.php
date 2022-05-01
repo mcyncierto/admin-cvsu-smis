@@ -33,11 +33,11 @@
                         <input id="student_number" type="text"
                             class="form-control @error('student_number') is-invalid @enderror" name="student_number"
                             value="{{ old('student_number') }}" required autocomplete="student_number" autofocus
-                            placeholder="Student Number">
+                            placeholder="Number Code">
                         <input type="text" name="student_number_mask" style="display:none;">
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-user-graduate"></span>
+                                <span class="fas fa-user"></span>
                             </div>
                         </div>
                         @error('student_number')
