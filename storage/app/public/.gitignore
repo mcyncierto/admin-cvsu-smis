@@ -1,5 +1,6 @@
 announcements/*
 profile-pictures/*
 scholarships/requirements/*
+!bg/
 !student-records-template.xlsx
 !.gitignore
