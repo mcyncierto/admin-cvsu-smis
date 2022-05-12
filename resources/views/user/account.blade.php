@@ -84,7 +84,7 @@
                             <div class="col-md-6">
                                 <input type="date" id="birthdate" name="birthdate"
                                 class="form-control @error('birthdate') is-invalid @enderror" name="birthdate"
-                                value="{{ Auth::user()->birthdate }}" required placeholder="Birthdate">
+                                value="{{ Auth::user()->birthdate }}" required placeholder="Birthdate" max="{{date("Y-m-d", strtotime("-18 years"))}}">
 
                                 @error('birthdate')
                                 <span class="invalid-feedback" role="alert">
