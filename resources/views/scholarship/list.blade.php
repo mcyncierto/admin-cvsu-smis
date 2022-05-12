@@ -30,7 +30,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-2">
                                     <select id="filter_course" name="filter_course" class="form-control-sm" style="width:100%">
                                         <option value="" selected>Filter Course here</option>
                                         @foreach ($courses as $course)
@@ -39,7 +39,16 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-2">
+                                    <select id="filter_scholarship_type" name="filter_scholarship_type" class="form-control-sm" style="width:100%">
+                                        <option value="" selected>Filter Scholarship Type here</option>
+                                        @foreach ($scholarship_types as $scholarship_type)
+                                            <option @if ($filter_scholarship_type == $scholarship_type['scholarship_type_name']) selected @endif) value="{{ $scholarship_type['scholarship_type_name'] }}">{{ $scholarship_type['scholarship_type_name'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-2">
                                     <input type="text" value="{{ $search }}" name="search" class="form-control-sm" placeholder="Search" style="width:100%">
                                 </div>
                                 <div class="col-2">

@@ -33,6 +33,7 @@ class ScholarshipController extends Controller
                 'filter_school_year' => '',
                 'filter_semester' => '',
                 'filter_course' => '',
+                'filter_scholarship_type' => '',
             ]);
         }
 
@@ -79,6 +80,10 @@ class ScholarshipController extends Controller
             $scholarships = $scholarships->where('sr.course', "$request->filter_course");
         }
 
+        if (!empty($request->filter_scholarship_type)) {
+            $scholarships = $scholarships->where('st.scholarship_type_name', "$request->filter_scholarship_type");
+        }
+
         if (isset($request->search)) {
             $search = $request->search;
 
@@ -117,6 +122,7 @@ class ScholarshipController extends Controller
         $scholarships = $scholarships->orderByDesc('s.updated_at')->paginate(20);
         $courses = Course::all()->toArray();
         $semesters = Semester::all()->toArray();
+        $scholarshipTypes = ScholarshipType::all()->toArray();
         $school_years = [];
         for ($y = 2022; $y <= date('Y'); ++$y) {
             $y2 = $y + 1;
@@ -129,9 +135,11 @@ class ScholarshipController extends Controller
             'semesters' => $semesters,
             'school_years' => $school_years,
             'courses' => $courses,
+            'scholarship_types' => $scholarshipTypes,
             'filter_course' => $request->filter_course,
             'filter_semester' => $request->filter_semester,
             'filter_school_year' => $request->filter_school_year,
+            'filter_scholarship_type' => $request->filter_scholarship_type,
         ]);
     }
 
