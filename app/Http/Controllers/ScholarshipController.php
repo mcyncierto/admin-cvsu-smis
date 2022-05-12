@@ -35,120 +35,44 @@ class ScholarshipController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->action == 'reset') {
-            $request->merge([
-                'search' => '',
-                'filter_school_year' => '',
-                'filter_semester' => '',
-                'filter_course' => '',
-                'filter_scholarship_type' => '',
+        if ($request->action == 'generate-pdf') {
+            return $this->generatePDF($request);
+        } else {
+            if ($request->action == 'reset') {
+                $request->merge([
+                    'search' => '',
+                    'filter_school_year' => '',
+                    'filter_semester' => '',
+                    'filter_course' => '',
+                    'filter_scholarship_type' => '',
+                ]);
+            }
+
+            $scholarships = $this->getData($request);
+            $scholarships = $scholarships->orderByDesc('s.updated_at')->paginate(20);
+
+            $courses = Course::all()->toArray();
+            $semesters = Semester::all()->toArray();
+            $scholarshipTypes = ScholarshipType::all()->toArray();
+            $school_years = [];
+            for ($y = 2021; $y <= date('Y'); ++$y) {
+                $y2 = $y + 1;
+                $school_years[] = $y.'-'.$y2;
+            }
+
+            return view('scholarship.list', [
+                'scholarships' => $scholarships,
+                'search' => $request->search,
+                'semesters' => $semesters,
+                'school_years' => $school_years,
+                'courses' => $courses,
+                'scholarship_types' => $scholarshipTypes,
+                'filter_course' => $request->filter_course,
+                'filter_semester' => $request->filter_semester,
+                'filter_school_year' => $request->filter_school_year,
+                'filter_scholarship_type' => $request->filter_scholarship_type,
             ]);
         }
-
-        $scholarships = DB::table('scholarships AS s')
-                            ->leftJoin('users AS u', 's.created_by', '=', 'u.id')
-                            ->leftJoin('scholarship_types AS st', 's.scholarship_type_id', '=', 'st.id')
-                            ->leftJoin('student_records AS sr', function ($join) {
-                                $join->on('u.student_number', '=', 'sr.student_number')
-                                    ->on('s.school_year', '=', 'sr.school_year')
-                                    ->on('s.semester_id', '=', 'sr.semester_id');
-                            })
-                            ->leftJoin('semesters', 's.semester_id', '=', 'semesters.id')
-                            ->select(
-                                'u.student_number',
-                                'u.first_name',
-                                'u.middle_name',
-                                'u.last_name',
-                                'u.gender',
-                                'u.email',
-                                'semesters.semester_name',
-                                's.*',
-                                'sr.course',
-                                'sr.gpa',
-                                DB::raw(
-                                    "(CASE 
-                                        WHEN s.status = 0 THEN 'Created'
-                                        WHEN s.status = 1 THEN 'For Approval'
-                                        WHEN s.status = 2 THEN 'Approved'
-                                        WHEN s.status = 3 THEN 'Closed'
-                                    END) AS status_name"
-                                ),
-                                'st.scholarship_type_name'
-                            );
-
-        if (!empty($request->filter_school_year)) {
-            $scholarships = $scholarships->where('s.school_year', "$request->filter_school_year");
-        }
-
-        if (!empty($request->filter_semester)) {
-            $scholarships = $scholarships->where('semesters.semester_name', "$request->filter_semester");
-        }
-
-        if (!empty($request->filter_course)) {
-            $scholarships = $scholarships->where('sr.course', "$request->filter_course");
-        }
-
-        if (!empty($request->filter_scholarship_type)) {
-            $scholarships = $scholarships->where('st.scholarship_type_name', "$request->filter_scholarship_type");
-        }
-
-        if (isset($request->search)) {
-            $search = $request->search;
-
-            $searchStatus = null;
-            if (str_contains('created', Str::lower($search))) {
-                $searchStatus = 0;
-            } elseif (Str::contains('for approval', Str::lower($search))) {
-                $searchStatus = 1;
-            } elseif (Str::contains('approved', Str::lower($search))) {
-                $searchStatus = 2;
-            } elseif (Str::contains('closed', Str::lower($search))) {
-                $searchStatus = 3;
-            }
-            $filterStatus = is_null($searchStatus) ? $search : $searchStatus;
-            $scholarships = $scholarships->whereRaw("(u.student_number LIKE '%$search%'
-                    OR u.first_name  LIKE '%$search%'
-                    OR u.middle_name LIKE '%$search%'
-                    OR u.last_name LIKE '%$search%'
-                    OR u.gender LIKE '%$search%'
-                    OR u.email LIKE '%$search%'
-                    OR semesters.semester_name LIKE '%$search%'
-                    OR s.school_year LIKE '%$search%'
-                    OR sr.course LIKE '%$search%'
-                    OR sr.gpa LIKE '%$search%'
-                    OR s.organization LIKE '%$search%'
-                    OR s.remarks LIKE '%$search%'
-                    OR s.status LIKE '%$filterStatus%'
-                    OR st.scholarship_type_name LIKE '%$search%'
-                )");
-        }
-
-        if (Auth::user()->type == 'Student') {
-            $scholarships = $scholarships->where('s.created_by', Auth::user()->id);
-        }
-
-        $scholarships = $scholarships->orderByDesc('s.updated_at')->paginate(20);
-        $courses = Course::all()->toArray();
-        $semesters = Semester::all()->toArray();
-        $scholarshipTypes = ScholarshipType::all()->toArray();
-        $school_years = [];
-        for ($y = 2021; $y <= date('Y'); ++$y) {
-            $y2 = $y + 1;
-            $school_years[] = $y.'-'.$y2;
-        }
-
-        return view('scholarship.list', [
-            'scholarships' => $scholarships,
-            'search' => $request->search,
-            'semesters' => $semesters,
-            'school_years' => $school_years,
-            'courses' => $courses,
-            'scholarship_types' => $scholarshipTypes,
-            'filter_course' => $request->filter_course,
-            'filter_semester' => $request->filter_semester,
-            'filter_school_year' => $request->filter_school_year,
-            'filter_scholarship_type' => $request->filter_scholarship_type,
-        ]);
     }
 
     /**
@@ -346,6 +270,100 @@ class ScholarshipController extends Controller
     }
 
     /**
+     * Get Scholarship data from database, setup filters.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return object
+     */
+    private function getData($request)
+    {
+        $scholarships = DB::table('scholarships AS s')
+                            ->leftJoin('users AS u', 's.created_by', '=', 'u.id')
+                            ->leftJoin('scholarship_types AS st', 's.scholarship_type_id', '=', 'st.id')
+                            ->leftJoin('student_records AS sr', function ($join) {
+                                $join->on('u.student_number', '=', 'sr.student_number')
+                                    ->on('s.school_year', '=', 'sr.school_year')
+                                    ->on('s.semester_id', '=', 'sr.semester_id');
+                            })
+                            ->leftJoin('semesters', 's.semester_id', '=', 'semesters.id')
+                            ->select(
+                                'u.student_number',
+                                'u.first_name',
+                                'u.middle_name',
+                                'u.last_name',
+                                'u.gender',
+                                'u.email',
+                                'semesters.semester_name',
+                                's.*',
+                                'sr.course',
+                                'sr.gpa',
+                                DB::raw(
+                                    "(CASE 
+                                        WHEN s.status = 0 THEN 'Created'
+                                        WHEN s.status = 1 THEN 'For Approval'
+                                        WHEN s.status = 2 THEN 'Approved'
+                                        WHEN s.status = 3 THEN 'Closed'
+                                    END) AS status_name"
+                                ),
+                                'st.scholarship_type_name'
+                            );
+
+        if (!empty($request->filter_school_year)) {
+            $scholarships = $scholarships->where('s.school_year', "$request->filter_school_year");
+        }
+
+        if (!empty($request->filter_semester)) {
+            $scholarships = $scholarships->where('semesters.semester_name', "$request->filter_semester");
+        }
+
+        if (!empty($request->filter_course)) {
+            $scholarships = $scholarships->where('sr.course', "$request->filter_course");
+        }
+
+        if (!empty($request->filter_scholarship_type)) {
+            $scholarships = $scholarships->where('st.scholarship_type_name', "$request->filter_scholarship_type");
+        }
+
+        if (isset($request->search)) {
+            $search = $request->search;
+
+            $searchStatus = null;
+            if (str_contains('created', Str::lower($search))) {
+                $searchStatus = 0;
+            } elseif (Str::contains('for approval', Str::lower($search))) {
+                $searchStatus = 1;
+            } elseif (Str::contains('approved', Str::lower($search))) {
+                $searchStatus = 2;
+            } elseif (Str::contains('closed', Str::lower($search))) {
+                $searchStatus = 3;
+            }
+            $filterStatus = is_null($searchStatus) ? $search : $searchStatus;
+            $scholarships = $scholarships->whereRaw("(u.student_number LIKE '%$search%'
+                    OR u.first_name  LIKE '%$search%'
+                    OR u.middle_name LIKE '%$search%'
+                    OR u.last_name LIKE '%$search%'
+                    OR u.gender LIKE '%$search%'
+                    OR u.email LIKE '%$search%'
+                    OR semesters.semester_name LIKE '%$search%'
+                    OR s.school_year LIKE '%$search%'
+                    OR sr.course LIKE '%$search%'
+                    OR sr.gpa LIKE '%$search%'
+                    OR s.organization LIKE '%$search%'
+                    OR s.remarks LIKE '%$search%'
+                    OR s.status LIKE '%$filterStatus%'
+                    OR st.scholarship_type_name LIKE '%$search%'
+                )");
+        }
+
+        if (Auth::user()->type == 'Student') {
+            $scholarships = $scholarships->where('s.created_by', Auth::user()->id);
+        }
+
+        return $scholarships;
+    }
+
+    /**
      * Save files to storage.
      *
      * @return array
@@ -427,5 +445,20 @@ class ScholarshipController extends Controller
         $storageAppPath = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
 
         return response()->file($storageAppPath."\public\scholarships\\requirements\\".$id.'\\'.$fileName, $headers);
+    }
+
+    /**
+     * Generate PDF.
+     *
+     * @return void
+     */
+    public function generatePDF(Request $request)
+    {
+        $data['filters'] = $request->all();
+        $data['scholarships'] = $this->getData($request);
+        $data['scholarships'] = $data['scholarships']->orderByDesc('s.updated_at')->get();
+        $pdf = PDF::loadView('pdf/scholarship-applications-list', $data);
+
+        return $pdf->download('scholarship-applications-list.pdf');
     }
 }

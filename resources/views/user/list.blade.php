@@ -11,11 +11,18 @@
                         @method('get')
                         @csrf
                         <div class="card-tools">
-                            <div class="input-group input-group-sm" style="width: 150px;">
-                                <input type="text" value="{{ $search }}" name="search" class="form-control float-right" placeholder="Search">
+                            <div class="row">
+                                <div class="input-group input-group-sm mt-1 mb-2" style="width: 150px;">
+                                    <input type="text" value="{{ $search }}" name="search" class="form-control float-right" placeholder="Search">
 
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i></button>
+                                    <div class="input-group-append">
+                                        <button name="action" value="search" type="submit" class="btn btn-secondary"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                                <div class="mt-1 ml-3 mr-3">
+                                    <button name="action" value="generate-pdf" type="submit" class="btn-sm btn-outline-secondary">
+                                        Export <i class="fas fa-download"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>

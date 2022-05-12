@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use PDF;
 
 class UserController extends Controller
 {
@@ -19,6 +20,26 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
+    {
+        $users = $this->getData($request);
+
+        if ($request->action == 'generate-pdf') {
+            return $this->generatePDF($request);
+        } else {
+            $users = $users->paginate(10);
+        }
+
+        return view('user.list', ['users' => $users, 'search' => $request->search]);
+    }
+
+    /**
+     * Get Users data from database, setup filters.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return object
+     */
+    private function getData($request)
     {
         if (isset($request->search)) {
             $search = $request->search;
@@ -32,12 +53,27 @@ class UserController extends Controller
                     ->orWhere('address', 'LIKE', "%$search%")
                     ->orWhere('email', 'LIKE', "%$search%")
                     ->orWhere('type', 'LIKE', "%$search%")
-                    ->orderByDesc('updated_at')->paginate(10);
+                    ->orderByDesc('updated_at');
         } else {
-            $users = User::orderByDesc('updated_at')->paginate(10);
+            $users = User::orderByDesc('updated_at');
         }
 
-        return view('user.list', ['users' => $users, 'search' => $request->search]);
+        return $users;
+    }
+
+    /**
+     * Generate PDF.
+     *
+     * @return void
+     */
+    public function generatePDF(Request $request)
+    {
+        $data['filters'] = $request->all();
+        $data['users'] = $this->getData($request);
+        $data['users'] = $data['users']->get();
+        $pdf = PDF::loadView('pdf/users-list', $data);
+
+        return $pdf->download('users-list.pdf');
     }
 
     /**

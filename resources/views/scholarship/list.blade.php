@@ -54,6 +54,7 @@
                                 <div class="col-2">
                                     <button name="action" value="search" type="submit" class="btn-sm btn-primary">Search <i class="fas fa-search"></i></button>
                                     <button name="action" value="reset" type="submit" class="btn-sm btn-secondary">Reset</button>
+                                    <button name="action" value="generate-pdf" type="submit" class="btn-sm btn-outline-secondary">Export <i class="fas fa-download"></i></button>
                                 </div>
                             </div>
                         </div>
