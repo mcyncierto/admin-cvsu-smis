@@ -47,8 +47,8 @@
 
                             <div class="col-md-6">
                                 <select id="type" class="form-control" @error('type') is-invalid @enderror name="type" required>
-                                    <option>general</option>
-                                    <option>event</option>
+                                    <option>General</option>
+                                    <option>Event</option>
                                 </select>
                                 @error('type')
                                     <span class="invalid-feedback" role="alert">
