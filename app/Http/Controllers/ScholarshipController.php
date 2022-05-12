@@ -124,7 +124,7 @@ class ScholarshipController extends Controller
         $semesters = Semester::all()->toArray();
         $scholarshipTypes = ScholarshipType::all()->toArray();
         $school_years = [];
-        for ($y = 2022; $y <= date('Y'); ++$y) {
+        for ($y = 2021; $y <= date('Y'); ++$y) {
             $y2 = $y + 1;
             $school_years[] = $y.'-'.$y2;
         }
@@ -165,6 +165,7 @@ class ScholarshipController extends Controller
         ];
 
         $data['school_year'] = [
+            Carbon::now()->subYears(1)->format('Y').'-'.Carbon::now()->format('Y'),
             Carbon::now()->format('Y').'-'.Carbon::now()->addYears(1)->format('Y'),
             Carbon::now()->addYears(1)->format('Y').'-'.Carbon::now()->addYears(2)->format('Y'),
         ];

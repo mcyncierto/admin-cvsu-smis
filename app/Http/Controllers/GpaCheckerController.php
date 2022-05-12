@@ -93,7 +93,7 @@ class GpaCheckerController extends Controller
         $data['courses'] = Course::all()->toArray();
         $data['semesters'] = Semester::all()->toArray();
         $data['school_years'] = [];
-        for ($y = 2022; $y <= date('Y'); ++$y) {
+        for ($y = 2021; $y <= date('Y'); ++$y) {
             $y2 = $y + 1;
             $data['school_years'][] = $y.'-'.$y2;
         }
