@@ -62,7 +62,7 @@
                                         <label class="custom-file-label" for="file">Choose file</label>
                                     </div>
                                     <div class="mt-2">
-                                        <i class='text-muted'>(accepts .pdf, .doc, .docx)</i>
+                                        <i class='text-muted'>(accepts .xlsx, .xls)</i>
                                         <a class='mb-n2 text-success float-right' href='{{ asset('storage/student-records-template.xlsx') }}' download>
                                             <i class="fas fa-download"></i>
                                             Download Student Record Template
