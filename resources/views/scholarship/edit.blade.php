@@ -119,9 +119,25 @@
                             @if (Auth::user()->type == 'Admin')
                             <div class="form-group row">
                                 <label for="remarks"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('Remarks') }}</label>
+                                    class="col-md-4 col-form-label text-md-right">{{ __('Remarks') }} <span style="color:red">*</span></label></label>
+
                                 <div class="col-md-6">
-                                    <textarea id="remarks" class="form-control" rows="3" name="remarks">{{ $scholarship->remarks }}</textarea>
+                                    <select id="remarks" class="form-control" @error('remarks') is-invalid @enderror
+                                        name="remarks" required onchange="displayOtherRemarks(this.value)">
+                                        <option value="" disabled selected>Select here</option>
+                                        @foreach ($remarks_options as $option)
+                                            <option 
+                                                value="{{ $option }}"
+                                                @if ($scholarship->remarks == $option) selected 
+                                                @elseif ($option == 'Others' && !in_array($scholarship->remarks, $remarks_options) && $scholarship->remarks != '') selected
+                                                @endif
+                                            >
+                                                {{ $option }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <textarea id="remarks-others" class="form-control mt-3" rows="3" name="remarks_others" placeholder="Type here for other remarks">{{ $scholarship->remarks_others }}</textarea>
                                     @error('remarks')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -191,7 +207,17 @@
 <script>
     window.onload = function() {
         getRequirements($('#scholarship_type').val());
+        displayOtherRemarks($('#remarks').val());
     }; 
+    
+    function displayOtherRemarks(option) {
+        if (option == 'Others') {
+            $('#remarks-others').show();
+        } else {
+            $('#remarks-others').hide();
+        }
+    }
+
     function getRequirements(id) {
         var baseURL = window.location.origin + '/cvsu-smis';
         // AJAX request 
@@ -235,31 +261,6 @@
                         "</div>"
                     );
                 }
-                
-                // if (response['data'].length > 0){
-                //     for (var i = 0; i < response['data'].length; i++){
-                //         if (response['data'][i].input_type == "attachment") {
-                //             inputType = "<input id='attachment' type='file' name='attachment[]' multiple>";
-                //             $('#requirements-div').append(
-                //                 "<div class='form-group row'>" +
-                //                     "<span class='col-md-4 col-form-label text-md-right font-italic text-info'>"+response['data'][i].requirement_name+"</span>" +
-                //                     "<div class='col-md-6'>" +
-                //                             inputType +
-                //                     "</div>" +
-                //                 "</div>"
-                //             );
-                //         } else if (response['data'][i].requirement_name == "Organization" && response['data'][i].input_type == "textbox") {
-                //             $('#org-div').show();
-                //             $('#org').prop('required', true);
-                //         }
-                //     }
-                // } else {
-                //     $('#requirements-div').append(
-                //         "<div class='form-group row'>" +
-                //             "<span class='col-md-6 col-form-label text-md-right font-italic text-muted'>No other requirements needed.</span>" +
-                //         "</div>"
-                //     );
-                // }
             }
         });
     }

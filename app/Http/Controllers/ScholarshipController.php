@@ -20,6 +20,14 @@ class ScholarshipController extends Controller
 {
     use ApiResponser;
 
+    private $remarksOptions = [
+        'Meet all the Requirements Needed',
+        'Wrong Requirements',
+        'Lack of Requirements',
+        'Not qualified for the required GPA',
+        'Others',
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -261,6 +269,13 @@ class ScholarshipController extends Controller
 
         $data['scholarship_type'] = ScholarshipType::all()->toArray();
         $data['requirements'] = ScholarshipRequirement::where('scholarship_id', $id)->get();
+        $data['remarks_options'] = $this->remarksOptions;
+
+        if (!in_array($data['scholarship']->remarks, $data['remarks_options'])) {
+            $data['scholarship']->remarks_others = $data['scholarship']->remarks;
+        } else {
+            $data['scholarship']->remarks_others = '';
+        }
 
         return view('scholarship.edit', $data);
     }
@@ -290,13 +305,20 @@ class ScholarshipController extends Controller
         }
 
         $scholarship = Scholarship::findOrFail($id);
+
+        if ($request->remarks == 'Others' && !empty($request->remarks_others)) {
+            $remarksValue = $request->remarks_others;
+        } else {
+            $remarksValue = $request->remarks;
+        }
+
         $scholarship->update([
             'semester_id' => $request->semester,
             'school_year' => $request->school_year,
             'scholarship_type_id' => $request->scholarship_type,
             'gpa' => $request->gpa,
             'status' => $status,
-            'remarks' => $request->remarks,
+            'remarks' => $remarksValue,
             'organization' => $request->org,
         ]);
 
