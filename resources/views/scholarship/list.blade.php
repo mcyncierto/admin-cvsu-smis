@@ -74,7 +74,7 @@
                                 <th>Organization</th>
                                 <th>Scholarship Type</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Qualified?</th>
+                                <th class="text-center">Qualified</th>
                                 <th>Remarks</th>
                                 <th style="text-align:center">Actions</th>
                             </tr>
@@ -86,9 +86,9 @@
                                     <td>{{ implode(' ', [$scholarship->first_name, $scholarship->middle_name, $scholarship->last_name])}}</td>
                                     <td>{{ $scholarship->email}}</td>
                                     <td>{{ $scholarship->school_year}}</br>{{ $scholarship->semester_name}}</td>
-                                    <td>{{ $scholarship->course}}</td>
-                                    <td>{{ $scholarship->gpa}}</td>
-                                    <td>{{ $scholarship->organization}}</td>
+                                    <td>{{ $scholarship->course ?? '--'}}</td>
+                                    <td>{{ $scholarship->gpa ?? '--'}}</td>
+                                    <td>{{ $scholarship->organization ?? '--'}}</td>
                                     <td>{{ $scholarship->scholarship_type_name}}</td>
                                     <td class="text-center"> 
                                         <span style="font-size:12px" class="badge
@@ -105,7 +105,7 @@
                                             <span class="fas fa-check-circle text-success" style="font-size:18px"></span>
                                         @endif
                                     </td>
-                                    <td>{{ $scholarship->remarks}}</td>
+                                    <td>{{ $scholarship->remarks ?? '--'}}</td>
                                     <td style="width:110px">
                                         <div>
                                             <a title="Edit User" type="button"
