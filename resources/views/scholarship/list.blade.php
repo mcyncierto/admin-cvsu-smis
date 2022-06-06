@@ -5,7 +5,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Scholarships List</h3>
+                    <span class="card-title text-bold text-gray">Scholarships List</span>
 
                     <form action="{{ route('scholarships.index') }}" method="post" id="formSearchScholarship" class="card-tools">
                         @method('get')

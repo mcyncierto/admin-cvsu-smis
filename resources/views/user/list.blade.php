@@ -5,7 +5,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Users List</h3>
+                    <span class="card-title text-bold text-gray">Users List</span>
 
                     <form action="{{ route('users.index') }}" method="post" id="formSearchUser" class="card-tools">
                         @method('get')

@@ -5,7 +5,7 @@
     <div class="col-12">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">GPA Checker</h3>
+                <span class="card-title text-bold text-gray">GPA Checker</span>
             </div>
             <i class="ml-4 mt-2">
                 <span class="text-muted">Upload Student Master List here with GPA and Enrollment status to be processed for </span>
@@ -83,7 +83,7 @@
         </div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Student Records</h3>
+                <span class="card-title text-bold text-gray">Student Records</span>
 
                 <form action="{{ route('gpa-checker.create') }}" method="post" id="formSearch" class="card-tools">
                     @method('get')

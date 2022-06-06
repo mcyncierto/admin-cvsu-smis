@@ -3,19 +3,19 @@
 @section('content')
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class="col-6">
-                <div class="card card-info collapsed-card">
+            <div class="col-12">
+                <div class="card card-default">
                     <div class="card-header">
-                        <h3 class="card-title">Application Process</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                    class="fas fa-plus mt-2"></i>
+                        <span class="card-title text-bold text-gray">Application Process</span>
+                        <div class="float-right mb-3">
+                            <button type="button" class="btn btn-block btn-success mb-n3" data-toggle="modal" data-target="#application-form-modal">
+                                <i class="fas fa-plus-circle"></i>
+                                Create New
                             </button>
                         </div>
-
                     </div>
 
-                    <div class="card-body" style="display: none;">
+                    <div class="card-body" style="font-size: 16px">
                         <div class="card-body">
                             <p>1. Have a copy of the needed requirements. (See table below for reference)</p>
                             <p>2. Grade Point Average (GPA) should meet the required range. (See table below for reference)</p>
@@ -57,116 +57,121 @@
             </div>
         </div>
 
-        <div class="row justify-content-center">
-            <!-- Input addon -->
-            <div class="col-6">
-                <form class="form-signin needs-validation" method="POST" action="{{ route('scholarships.store') }}"
-                    enctype="multipart/form-data">
-                    {{ csrf_field() }}
-
-                    <div class="card card-success">
-                        <div class="card-header">
-                            <h3 class="card-title">Scholarship Application - Create New</h3>
+        <form class="form-signin needs-validation" method="POST" action="{{ route('scholarships.store') }}"
+            enctype="multipart/form-data">
+            {{ csrf_field() }}
+            <div class="modal fade" id="application-form-modal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Scholarship Application - Create New</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <div class="card-body">
-                            <div class="form-group row">
-                                <label for="semester"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('Semester') }}</label>
-
-                                <div class="col-md-6">
-                                    <select id="semester" class="form-control" @error('semester') is-invalid @enderror
-                                        name="semester" required>
-                                        <option selected value={{ $current_semester['id'] }}>
-                                            {{ $current_semester['semester_name'] }}</option>
-                                    </select>
-                                    @error('semester')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="semester"
+                                        class="col-md-4 col-form-label text-md-right">{{ __('Semester') }}</label>
+    
+                                    <div class="col-md-6">
+                                        <select id="semester" class="form-control" @error('semester') is-invalid @enderror
+                                            name="semester" required>
+                                            <option selected value={{ $current_semester['id'] }}>
+                                                {{ $current_semester['semester_name'] }}</option>
+                                        </select>
+                                        @error('semester')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="school_year"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('School Year') }} <span
-                                        style="color:red">*</span></label>
-
-                                <div class="col-md-6">
-                                    <select id="school_year" class="form-control"
-                                        @error('school_year') is-invalid @enderror name="school_year" required>
-                                        @foreach ($school_year as $year)
-                                            <option>{{ $year }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('school_year')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+    
+                                <div class="form-group row">
+                                    <label for="school_year"
+                                        class="col-md-4 col-form-label text-md-right">{{ __('School Year') }} <span
+                                            style="color:red">*</span></label>
+    
+                                    <div class="col-md-6">
+                                        <select id="school_year" class="form-control"
+                                            @error('school_year') is-invalid @enderror name="school_year" required>
+                                            @foreach ($school_year as $year)
+                                                <option>{{ $year }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('school_year')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="scholarship_type"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('Scholarship Type') }} <span
-                                        style="color:red">*</span></label>
-
-                                <div class="col-md-6">
-                                    <select id="scholarship_type" class="form-control"
-                                        @error('scholarship_type') is-invalid @enderror name="scholarship_type" required
-                                        onchange="getRequirements(this.value)">
-                                        <option value="" disabled selected>Select here</option>
-                                        @foreach ($scholarship_type as $type)
-                                            <option value={{ $type['id'] }}>{{ $type['scholarship_type_name'] }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('scholarship_type')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+    
+                                <div class="form-group row">
+                                    <label for="scholarship_type"
+                                        class="col-md-4 col-form-label text-md-right">{{ __('Scholarship Type') }} <span
+                                            style="color:red">*</span></label>
+    
+                                    <div class="col-md-6">
+                                        <select id="scholarship_type" class="form-control"
+                                            @error('scholarship_type') is-invalid @enderror name="scholarship_type" required
+                                            onchange="getRequirements(this.value)">
+                                            <option value="" disabled selected>Select here</option>
+                                            @foreach ($scholarship_type as $type)
+                                                <option value={{ $type['id'] }}>{{ $type['scholarship_type_name'] }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('scholarship_type')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group row" id="org-div" style="display: none">
-                                <label for="org" class="col-md-4 col-form-label text-md-right">{{ __('Organization') }}
-                                    <span style="color:red">*</span></label>
-                                <div class="col-md-6">
-                                    <input id="org" type="text" class="form-control @error('org') is-invalid @enderror"
-                                        name="org">
-                                    @error('org')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+    
+                                <div class="form-group row" id="org-div" style="display: none">
+                                    <label for="org" class="col-md-4 col-form-label text-md-right">{{ __('Organization') }}
+                                        <span style="color:red">*</span></label>
+                                    <div class="col-md-6">
+                                        <input id="org" type="text" class="form-control @error('org') is-invalid @enderror"
+                                            name="org">
+                                        @error('org')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
+    
+                                <div class="form-group row mb-1">
+                                    <label for="files"
+                                        class="col-md-4 col-form-label text-md-right">{{ __('Upload Requirements:') }} <span
+                                            style="color:red">*</span>
+                                    </label>
+                                    <div class='form-group row' id="attachment-div"></div>
+                                </div>
+                                <div id="requirements-list-div" class='form-group row'></div>
                             </div>
-
-                            <div class="form-group row mb-1">
-                                <label for="files"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('Upload Requirements:') }} <span
-                                        style="color:red">*</span>
-                                </label>
-                                <div class='form-group row' id="attachment-div"></div>
-                            </div>
-                            <div id="requirements-list-div" class='form-group row'></div>
                         </div>
                         <div class="modal-footer">
                             <button id="submitBtnScholarship" name="action" type="submit" value="save_for_later"
                                 class="btn btn-primary float-right">Save for Later</button>
                             <button id="submitBtnScholarship" name="action" type="submit" value="for_approval"
                                 class="btn btn-warning float-right">Submit for Approval</button>
-                            <a href="{{ route('scholarships.index') }}" id="cancel" name="btn-cancel" type="button"
-                                value="disapprove" class="btn btn-outline-secondary float-right">Cancel</a>
+                            <button data-dismiss="modal" id="cancel" name="btn-cancel" type="button" value="disapprove" 
+                                class="btn btn-outline-secondary float-right">Cancel</button>
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
-                </form>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
             </div>
-        </div>
+        </form>
+
+
     </div>
 @endsection()
 <script>
