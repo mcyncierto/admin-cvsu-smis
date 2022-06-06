@@ -16,7 +16,6 @@
                         <div class="card-body">
                             @if ($scholarship->is_qualified)
                             <div class="alert alert-success mb-4">
-                                {{-- <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button> --}}
                                 <h5><i class="icon fas fa-check"></i> Qualified</h5>
                                 This applicant is qualified to the Scholarship Type. Please check the attached requirements.
                             </div>
@@ -100,9 +99,9 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row" id="org-div" style="display: @if (empty($scholarship->organization)) none @endif">
+                            <div class="form-group row" id="org-div">
                                 <label for="org"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('Organization') }} <span style="color:red">*</span></label>
+                                    class="col-md-4 col-form-label text-md-right">{{ __('Organization') }} <span id="req-org" style="color:red; display: none">*</span></label>
                                 <div class="col-md-6">
                                     <input id="org" type="text"
                                         class="form-control @error('org') is-invalid @enderror"
@@ -231,7 +230,7 @@
                 // console.log(response['data']);
                 $('#requirements-list-div').empty();
                 $('#attachment-div').empty();
-                $('#org-div').hide();
+                $('#req-org').hide();
                 $('#org').prop('required', false);
 
                 if (response['data'].length > 0){
@@ -239,7 +238,7 @@
                         if (response['data'][i].input_type == "attachment") {
                             reqs.push(response['data'][i].requirement_name);
                         } else if (response['data'][i].requirement_name == "Organization" && response['data'][i].input_type == "textbox") {
-                            $('#org-div').show();
+                            $('#req-org').show();
                             $('#org').prop('required', true);
                         }
                     }
