@@ -132,9 +132,9 @@
                                     </div>
                                 </div>
     
-                                <div class="form-group row" id="org-div" style="display: none">
+                                <div class="form-group row" id="org-div">
                                     <label for="org" class="col-md-4 col-form-label text-md-right">{{ __('Organization') }}
-                                        <span style="color:red">*</span></label>
+                                        <span id="req-org" style="color:red; display: none">*</span></label>
                                     <div class="col-md-6">
                                         <input id="org" type="text" class="form-control @error('org') is-invalid @enderror"
                                             name="org">
@@ -187,10 +187,9 @@
             dataType: 'json',
             success: function(response) {
                 var reqs = [];
-                // console.log(response['data']);
                 $('#requirements-list-div').empty();
                 $('#attachment-div').empty();
-                $('#org-div').hide();
+                $('#req-org').hide();
                 $('#org').prop('required', false);
 
                 if (response['data'].length > 0) {
@@ -199,7 +198,7 @@
                             reqs.push(response['data'][i].requirement_name);
                         } else if (response['data'][i].requirement_name == "Organization" && response[
                                 'data'][i].input_type == "textbox") {
-                            $('#org-div').show();
+                            $('#req-org').show();
                             $('#org').prop('required', true);
                         }
                     }
