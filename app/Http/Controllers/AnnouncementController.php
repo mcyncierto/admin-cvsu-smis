@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AnnouncementController extends Controller
 {
@@ -85,6 +86,24 @@ class AnnouncementController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $announcement = Announcement::findOrFail($id);
+        $announcement->update([
+            'title' => $request->title,
+            'content' => $request->content,
+            'type' => $request->type,
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        $photoSaveAsName = '';
+        if (request()->hasFile('photo')) {
+            $photo = request()->photo;
+            $photoSaveAsName = time().$announcement->id.'-photo.'.$photo->getClientOriginalExtension();
+            Storage::delete('announcements/'.$announcement->photo);
+            request()->file('photo')->storeAs('announcements', $photoSaveAsName);
+            $announcement->update(['photo' => $photoSaveAsName]);
+        }
+
+        return redirect()->back()->with('message', 'Announcement successfully updated');
     }
 
     /**

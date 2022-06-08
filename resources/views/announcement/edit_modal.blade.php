@@ -1,7 +1,7 @@
-<form class="form-signin needs-validation" method="POST" action="{{ route('announcements.store') }}"
-    enctype="multipart/form-data">
+<form method="POST" action="{{ route('announcements.update', $announcement->id) }}" enctype="multipart/form-data" id="formUpdate{{ $announcement->id }}">
     @csrf
-    <div class="modal fade" id="add-announcement-modal">
+    @method('patch')
+    <div class="modal fade" id="edit-announcement-modal-{{ $announcement->id  }}">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -16,9 +16,9 @@
                             <label for="title" class="col-md-4 col-form-label text-md-right">{{ __('Title') }} <span style="color:red">*</span></label>
 
                             <div class="col-md-6">
-                                <input id="title" type="text" class="form-control @error('title') is-invalid @enderror"
-                                    name="title" required autofocus>
-                                @error('title')
+                                <input id="title{{ $announcement->id }}" type="text" class="form-control @error('title{{ $announcement->id }}') is-invalid @enderror"
+                                    name="title" required autofocus value="{{ $announcement->title }}">
+                                @error('title{{ $announcement->id }}')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -31,9 +31,9 @@
                                 class="col-md-4 col-form-label text-md-right">{{ __('Content') }} <span style="color:red">*</span></label>
 
                             <div class="col-md-6">
-                                <textarea id="content" class="form-control" rows="3" placeholder="Enter ..."
-                                    @error('content') is-invalid @enderror name="content" required></textarea>
-                                @error('content')
+                                <textarea id="content{{ $announcement->id }}" class="form-control" rows="3" placeholder="Enter ..."
+                                    @error('content{{ $announcement->id }}') is-invalid @enderror name="content" required>{{ $announcement->content }}</textarea>
+                                @error('content{{ $announcement->id }}')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -47,8 +47,8 @@
 
                             <div class="col-md-6">
                                 <select id="type" class="form-control" @error('type') is-invalid @enderror name="type" required>
-                                    <option>General</option>
-                                    <option>Event</option>
+                                    <option {{ ($announcement->type == 'General' ? 'selected' : '')}}>General</option>
+                                    <option {{ ($announcement->type == 'Event' ? 'selected' : '')}}>Event</option>
                                 </select>
                                 @error('type')
                                     <span class="invalid-feedback" role="alert">
@@ -64,8 +64,8 @@
 
                             <div class="col-md-6">
                                 <input id="photo" type="file" name="photo">
-                                {{-- </br><i class="text-info">If not changing profile picture, please leave it
-                                    blank.</i> --}}
+                                </br><i class="text-info">If not changing profile picture, please leave it
+                                    blank.</i>
                             </div>
                         </div>
 

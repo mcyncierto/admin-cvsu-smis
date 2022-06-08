@@ -44,10 +44,14 @@
                                     <small>{{ Str::ucfirst($announcement->type) }}</small>
 
                                     @if (Auth::user()->type == 'Admin')
+                                    <div class="row float-right mt-n3 mr-2">
+                                        <button title="Edit Record" type="button" class="btn btn-block btn-outline-warning btn-sm mr-2" style="width: 35px"
+                                            data-toggle="modal" data-target="#edit-announcement-modal-{{ $announcement->id }}">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
                                         <form action="{{ route('announcements.destroy', $announcement->id) }}" method="post"
                                             id="formDeleteAnnouncement{{ $announcement->id }}">
-                                            <button title="Delete Record" type="button" class="mt-n4 btn btn-block btn-outline-danger btn-sm 
-                                                    float-right" style="width: 35px"
+                                            <button title="Delete Record" type="button" class="btn btn-block btn-outline-danger btn-sm" style="width: 35px"
                                                 onclick="confirmSubmit('delete', 'formDeleteAnnouncement',
                                                 '{{ $announcement->id }}')">
                                                 <i class="fas fa-trash"></i>
@@ -55,8 +59,10 @@
                                             @method('delete')
                                             @csrf
                                         </form>
+                                    </div>
                                     @endif
                                 </div>
+                                @include('announcement.edit_modal')
                                 
                                 <div class="timeline-body">
                                     {{ $announcement->content }}

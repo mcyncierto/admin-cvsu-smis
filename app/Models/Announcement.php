@@ -20,5 +20,6 @@ class Announcement extends Model
         'type',
         'photo',
         'created_by',
+        'updated_by',
     ];
 }

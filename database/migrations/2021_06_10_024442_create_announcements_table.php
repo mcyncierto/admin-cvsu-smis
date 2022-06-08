@@ -20,6 +20,7 @@ class CreateAnnouncementsTable extends Migration
             $table->string('type')->default('general'); // general|event
             $table->string('photo')->nullable();
             $table->string('created_by');
+            $table->string('updated_by')->nullable();
             $table->timestamps();
             // $table->softDeletes();
         });
