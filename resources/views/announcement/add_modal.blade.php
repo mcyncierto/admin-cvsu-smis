@@ -28,11 +28,11 @@
 
                         <div class="form-group row">
                             <label for="content"
-                                class="col-md-4 col-form-label text-md-right">{{ __('Content') }} <span style="color:red">*</span></label>
+                                class="col-md-4 col-form-label text-md-right">{{ __('Content') }}</label>
 
                             <div class="col-md-6">
-                                <textarea id="content" class="form-control" rows="3" placeholder="Enter ..."
-                                    @error('content') is-invalid @enderror name="content" required></textarea>
+                                <textarea id="content" style="width: 500px" class="form-control" placeholder="Enter here ..."
+                                    @error('content') is-invalid @enderror name="content"></textarea>
                                 @error('content')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -83,3 +83,10 @@
     </div>
     <!-- /.modal -->
 </form>
+<script>
+    ClassicEditor
+        .create( document.querySelector( '#content' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>

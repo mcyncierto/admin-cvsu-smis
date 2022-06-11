@@ -75,6 +75,9 @@ class AnnouncementController extends Controller
      */
     public function edit($id)
     {
+        $data['announcement'] = Announcement::find($id);
+
+        return view('announcement.edit', $data);
     }
 
     /**
@@ -103,7 +106,7 @@ class AnnouncementController extends Controller
             $announcement->update(['photo' => $photoSaveAsName]);
         }
 
-        return redirect()->back()->with('message', 'Announcement successfully updated');
+        return redirect()->route('announcements.index')->with('message', 'Announcement successfully updated!');
     }
 
     /**

@@ -38,17 +38,24 @@
                                 <i class="far fa-calendar-check bg-green"></i>
                             @endif
                             <div class="timeline-item">
-                                <span class="time"><i class="fas fa-clock"></i> {{ Carbon\Carbon::parse($announcement->created_at)->diffForHumans()}}</span>
+                                <span class="time"><i class="fas fa-clock"></i> {{ Carbon\Carbon::parse($announcement->updated_at)->diffForHumans()}}</span>
                                 <div class="timeline-header">
                                     <h3>{{ $announcement->title }}</h3>
                                     <small>{{ Str::ucfirst($announcement->type) }}</small>
 
                                     @if (Auth::user()->type == 'Admin')
                                     <div class="row float-right mt-n3 mr-2">
-                                        <button title="Edit Record" type="button" class="btn btn-block btn-outline-warning btn-sm mr-2" style="width: 35px"
+                                        {{-- <button title="Edit Record" type="button" class="btn btn-block btn-outline-warning btn-sm mr-2" style="width: 35px"
                                             data-toggle="modal" data-target="#edit-announcement-modal-{{ $announcement->id }}">
                                             <i class="fas fa-pencil-alt"></i>
-                                        </button>
+                                        </button> --}}
+                                        <div class="mr-2">
+                                            <a title="Edit Record" type="button"
+                                                href="{{ route('announcements.edit', $announcement->id) }}"
+                                                class="btn btn-block btn-outline-warning btn-sm" style="max-width: 35px">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </a>
+                                        </div>
                                         <form action="{{ route('announcements.destroy', $announcement->id) }}" method="post"
                                             id="formDeleteAnnouncement{{ $announcement->id }}">
                                             <button title="Delete Record" type="button" class="btn btn-block btn-outline-danger btn-sm" style="width: 35px"
@@ -62,10 +69,9 @@
                                     </div>
                                     @endif
                                 </div>
-                                @include('announcement.edit_modal')
                                 
                                 <div class="timeline-body">
-                                    {{ $announcement->content }}
+                                    {!! $announcement->content !!}
                                 </div>
                                 @if (isset($announcement->photo))
                                     <div class="pb-4" style="text-align:center">

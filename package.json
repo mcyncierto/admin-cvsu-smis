@@ -25,6 +25,7 @@
         "sass-loader": "^11.0.1"
     },
     "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^34.1.0",
         "@fortawesome/fontawesome-free": "^5.15.3",
         "ajax": "0.0.4",
         "tempusdominus-bootstrap-4": "^5.39.0"
