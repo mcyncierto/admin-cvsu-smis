@@ -28,11 +28,11 @@
 
                         <div class="form-group row">
                             <label for="content"
-                                class="col-md-4 col-form-label text-md-right">{{ __('Content') }} <span style="color:red">*</span></label>
+                                class="col-md-4 col-form-label text-md-right">{{ __('Content') }}</label>
 
                             <div class="col-md-6">
                                 <textarea id="content" class="form-control textarea-content" rows="3" placeholder="Enter ..."
-                                    @error('content{{ $announcement->id }}') is-invalid @enderror name="content" required>{!! $announcement->content !!}</textarea>
+                                    @error('content{{ $announcement->id }}') is-invalid @enderror name="content">{!! $announcement->content !!}</textarea>
                                 @error('content{{ $announcement->id }}')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
