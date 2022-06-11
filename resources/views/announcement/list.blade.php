@@ -45,10 +45,6 @@
 
                                     @if (Auth::user()->type == 'Admin')
                                     <div class="row float-right mt-n3 mr-2">
-                                        {{-- <button title="Edit Record" type="button" class="btn btn-block btn-outline-warning btn-sm mr-2" style="width: 35px"
-                                            data-toggle="modal" data-target="#edit-announcement-modal-{{ $announcement->id }}">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </button> --}}
                                         <div class="mr-2">
                                             <a title="Edit Record" type="button"
                                                 href="{{ route('announcements.edit', $announcement->id) }}"
