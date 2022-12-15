@@ -76,15 +76,12 @@ class GpaCheckerController extends Controller
                 )");
         }
 
-        $currentSemester = Semester::where('is_current', 1)->first()->toArray();
         $data = [
             'records' => $data['records']->orderByDesc('updated_at')->paginate(10),
             'search' => $request->search,
-            'current_semester' => [
-                'id' => $currentSemester['id'],
-                'semester_name' => $currentSemester['semester_name'],
-            ],
             'school_year' => [
+                Carbon::now()->subYears(2)->format('Y').'-'.Carbon::now()->subYears(1)->format('Y'),
+                Carbon::now()->subYears(1)->format('Y').'-'.Carbon::now()->format('Y'),
                 Carbon::now()->format('Y').'-'.Carbon::now()->addYears(1)->format('Y'),
                 Carbon::now()->addYears(1)->format('Y').'-'.Carbon::now()->addYears(2)->format('Y'),
             ],

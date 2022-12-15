@@ -90,11 +90,7 @@ class ScholarshipController extends Controller
                 GROUP BY rt.scholarship_type_id) AS requirements")
             )->get();
 
-        $currentSemester = Semester::where('is_current', 1)->first()->toArray();
-        $data['current_semester'] = [
-            'id' => $currentSemester['id'],
-            'semester_name' => $currentSemester['semester_name'],
-        ];
+        $data['semester'] = Semester::all()->toArray();
 
         $data['school_year'] = [
             Carbon::now()->subYears(1)->format('Y').'-'.Carbon::now()->format('Y'),
@@ -180,13 +176,11 @@ class ScholarshipController extends Controller
             abort(401);
         }
 
-        $currentSemester = Semester::where('is_current', 1)->first()->toArray();
-        $data['current_semester'] = [
-            'id' => $currentSemester['id'],
-            'semester_name' => $currentSemester['semester_name'],
-        ];
+        $data['semester'] = Semester::all()->toArray();
 
         $data['school_year'] = [
+            Carbon::now()->subYears(2)->format('Y').'-'.Carbon::now()->subYears(1)->format('Y'),
+            Carbon::now()->subYears(1)->format('Y').'-'.Carbon::now()->format('Y'),
             Carbon::now()->format('Y').'-'.Carbon::now()->addYears(1)->format('Y'),
             Carbon::now()->addYears(1)->format('Y').'-'.Carbon::now()->addYears(2)->format('Y'),
         ];

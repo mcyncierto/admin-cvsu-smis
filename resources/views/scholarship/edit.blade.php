@@ -28,7 +28,9 @@
                                 <div class="col-md-6">
                                     <select id="semester" class="form-control" @error('semester') is-invalid @enderror
                                         name="semester" required>
-                                        <option selected value={{ $current_semester['id'] }}>{{ $current_semester['semester_name'] }}</option>
+                                        @foreach ($semester as $sem)
+                                            <option @if ($scholarship->semester_id == $sem['id']) selected @endif value={{ $sem['id'] }}>{{ $sem['semester_name'] }}</option>
+                                        @endforeach
                                     </select>
                                     @error('semester')
                                         <span class="invalid-feedback" role="alert">
@@ -46,7 +48,7 @@
                                     <select id="school_year" class="form-control" @error('school_year') is-invalid @enderror
                                         name="school_year" required>
                                         @foreach ($school_year as $year)
-                                            <option @if ($scholarship->school_year == $year) selected @endif)>{{ $year }}</option>
+                                            <option @if ($scholarship->school_year == $year) selected @endif>{{ $year }}</option>
                                         @endforeach
                                     </select>
                                     @error('school_year')

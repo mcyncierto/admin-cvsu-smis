@@ -78,8 +78,10 @@
                                     <div class="col-md-6">
                                         <select id="semester" class="form-control" @error('semester') is-invalid @enderror
                                             name="semester" required>
-                                            <option selected value={{ $current_semester['id'] }}>
-                                                {{ $current_semester['semester_name'] }}</option>
+                                            @foreach ($semester as $sem)
+                                                <option selected value={{ $sem['id'] }}>
+                                                    {{ $sem['semester_name'] }}</option>
+                                            @endforeach
                                         </select>
                                         @error('semester')
                                             <span class="invalid-feedback" role="alert">

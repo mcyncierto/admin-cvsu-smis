@@ -23,7 +23,9 @@
                         <div class="col-md-4">
                             <select id="semester" class="form-control" @error('semester') is-invalid @enderror
                                 name="semester" required>
-                                <option selected value={{ $current_semester['id'] }}>{{ $current_semester['semester_name'] }}</option>
+                                @foreach ($semesters as $sem)
+                                    <option value={{ $sem['id'] }}>{{ $sem['semester_name'] }}</option>
+                                @endforeach
                             </select>
                             @error('semester')
                                 <span class="invalid-feedback" role="alert">
@@ -94,7 +96,7 @@
                                 <select id="filter_school_year" name="filter_school_year" class="form-control-sm" style="width:100%">
                                     <option value="" selected>Filter School Year here</option>
                                     @foreach ($school_years as $school_year)
-                                        <option @if ($filter_school_year == $school_year) selected @endif) value="{{ $school_year }}">{{ $school_year }}
+                                        <option @if ($filter_school_year == $school_year) selected @endif value="{{ $school_year }}">{{ $school_year }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -103,7 +105,7 @@
                                 <select id="filter_semester" name="filter_semester" class="form-control-sm" style="width:100%">
                                     <option value="" selected>Filter Semester here</option>
                                     @foreach ($semesters as $semester)
-                                        <option @if ($filter_semester == $semester['semester_name']) selected @endif) value="{{ $semester['semester_name'] }}">{{ $semester['semester_name'] }}
+                                        <option @if ($filter_semester == $semester['semester_name']) selected @endif value="{{ $semester['semester_name'] }}">{{ $semester['semester_name'] }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -112,7 +114,7 @@
                                 <select id="filter_course" name="filter_course" class="form-control-sm" style="width:100%">
                                     <option value="" selected>Filter Course here</option>
                                     @foreach ($courses as $course)
-                                        <option @if ($filter_course == $course['course_name']) selected @endif) value="{{ $course['course_name'] }}">{{ $course['course_name'] }}
+                                        <option @if ($filter_course == $course['course_name']) selected @endif value="{{ $course['course_name'] }}">{{ $course['course_name'] }}
                                         </option>
                                     @endforeach
                                 </select>
