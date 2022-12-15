@@ -301,7 +301,7 @@ class ScholarshipController extends Controller
                                     END) AS status_name"
                                 ),
                                 'st.scholarship_type_name'
-                            );
+                            )->distinct();
 
         if (!empty($request->filter_school_year)) {
             $scholarships = $scholarships->where('s.school_year', "$request->filter_school_year");
