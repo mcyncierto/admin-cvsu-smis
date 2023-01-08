@@ -165,6 +165,39 @@
                                 </a>
                             </li>
                         @endif
+                        @if (Auth::user()->type == 'Admin')
+                            <li class="nav-item menu-open">
+                                <a href="#" class="nav-link @if (\Request::is('settings*')) active @endif">
+                                    <i class="fas fa-cog"></i>
+                                    <p>Settings</p>
+                                    <i class="right fas fa-angle-left"></i>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a 
+                                            href="{{ route('scholarship-types.index') }}"
+                                            class="nav-link
+                                            @if (\Request::is('scholarship-types') || \Request::is('scholarship-types/index')) active @endif">
+                                            <span class="ml-3">
+                                                <i class="fas fa-file-contract"></i>
+                                                <p>Scholarship Types</p>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a 
+                                            href="{{ route('semesters.index') }}"
+                                            class="nav-link
+                                        @if (\Request::is('semesters') || \Request::is('semesters/index')) active @endif">
+                                            <span class="ml-3">
+                                                <i class="far fa-calendar-alt"></i>
+                                                <p>Semesters</p>
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

@@ -5,6 +5,8 @@ use App\Http\Controllers\GpaCheckerController;
 use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\RequirementTypeController;
 use App\Http\Controllers\ScholarshipController;
+use App\Http\Controllers\ScholarshipTypeController;
+use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +33,8 @@ Route::patch('/update/{id}', [UserController::class, 'update'])->name('users.upd
 Route::resource('announcements', AnnouncementController::class)->middleware('auth');
 Route::get('scholarships/view-attachment/{id}/{file_name}', [ScholarshipController::class, 'viewAttachment'])->name('scholarships.view-attachment');
 Route::resource('scholarships', ScholarshipController::class)->middleware('auth');
+Route::resource('scholarship-types', ScholarshipTypeController::class)->middleware('auth');
+Route::resource('semesters', SemesterController::class)->middleware('auth');
 Route::get('/requirement-types', [RequirementTypeController::class, 'index']);
 Route::resource('gpa-checker', GpaCheckerController::class)->middleware('auth')->middleware('admin');
 

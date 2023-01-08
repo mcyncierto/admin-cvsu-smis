@@ -202,6 +202,8 @@
                                 'data'][i].input_type == "textbox") {
                             $('#req-org').show();
                             $('#org').prop('required', true);
+                        } else {
+                            reqs.push(response['data'][i].requirement_name);
                         }
                     }
                     $('#requirements-list-div').append(

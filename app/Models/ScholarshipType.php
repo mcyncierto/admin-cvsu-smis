@@ -16,6 +16,7 @@ class ScholarshipType extends Model
      */
     protected $fillable = [
         'scholarship_type_name',
+        'description',
         'max_scholars_allowed',
         'lowest_gpa_allowed',
         'highest_gpa_allowed',
@@ -28,5 +29,14 @@ class ScholarshipType extends Model
     public function requirementTypes()
     {
         return $this->hasMany(RequirementType::class);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($scholarshipType) { // before delete() method call this
+            $scholarshipType->requirementTypes()->delete();
+        });
     }
 }
