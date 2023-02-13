@@ -76,24 +76,3 @@
             console.error( error );
         } );
 </script>
-
-<script>
-    $(function() {
-    // Multiple images preview with JavaScript
-        var previewImages = function(input, imgPreviewPlaceholder) {
-            if (input.photo) {
-                var filesAmount = input.photo.length;
-                for (i = 0; i < filesAmount; i++) {
-                    var reader = new FileReader();
-                    reader.onload = function(event) {
-                        $($.parseHTML('<img>')).attr('src', event.target.result).appendTo(imgPreviewPlaceholder);
-                    }
-                    reader.readAsDataURL(input.photo[i]);
-                }
-            }
-        };
-        $('#photo').on('change', function() {
-            previewImages(this, 'div.images-preview-div');
-        });
-    });
-</script>
