@@ -21,9 +21,8 @@ class ScholarshipController extends Controller
     use ApiResponser;
 
     private $remarksOptions = [
-        'Meet all the Requirements Needed',
-        'Wrong Requirements',
-        'Lack of Requirements',
+        'Complete Requirements',
+        'Incomplete Requirements',
         'Not qualified for the required GPA',
         'Others',
     ];

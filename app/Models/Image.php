@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Announcement extends Model
+class Image extends Model
 {
     use HasFactory;
 
@@ -15,19 +15,16 @@ class Announcement extends Model
      * @var array
      */
     protected $fillable = [
-        'title',
-        'content',
-        'type',
-        'photo',
-        'created_by',
-        'updated_by',
+        'image_name',
+        'imageable_id',
+        'imageable_type',
     ];
 
     /**
-     * Get all of the announcement's images.
+     * Get the parent imageable model.
      */
-    public function images()
+    public function imageable()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->morphTo();
     }
 }

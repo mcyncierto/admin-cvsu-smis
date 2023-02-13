@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\GpaCheckerController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\PhotoCatalogController;
 use App\Http\Controllers\RequirementTypeController;
 use App\Http\Controllers\ScholarshipController;
 use App\Http\Controllers\ScholarshipTypeController;
@@ -37,6 +38,7 @@ Route::resource('scholarship-types', ScholarshipTypeController::class)->middlewa
 Route::resource('semesters', SemesterController::class)->middleware('auth');
 Route::get('/requirement-types', [RequirementTypeController::class, 'index']);
 Route::resource('gpa-checker', GpaCheckerController::class)->middleware('auth')->middleware('admin');
+Route::resource('photo-catalog', PhotoCatalogController::class)->middleware('auth')->middleware('cashier');
 
 Route::group(['prefix' => 'inquiries'], function () {
     Route::get('/', [InquiryController::class, 'index'])->name('inquiries.index')->middleware('admin');

@@ -42,29 +42,12 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="content"
-                                class="col-md-4 col-form-label text-md-right">{{ __('Type') }} <span style="color:red">*</span></label>
-
-                            <div class="col-md-6">
-                                <select id="type" class="form-control" @error('type') is-invalid @enderror name="type" required>
-                                    <option {{ ($announcement->type == 'General' ? 'selected' : '')}}>General</option>
-                                    <option {{ ($announcement->type == 'Event' ? 'selected' : '')}}>Event</option>
-                                </select>
-                                @error('type')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
                             <label for="photo"
                                 class="col-md-4 col-form-label text-md-right">{{ __('Photo') }}</label>
 
                             <div class="col-md-6">
-                                <input id="photo" type="file" name="photo">
-                                </br><i class="text-info">If not changing profile picture, please leave it
+                                <input id="photo" type="file" name="photo[]" multiple accept='image/*'>
+                                </br><i class="text-info">If not changing images, please leave it
                                     blank.</i>
                             </div>
                         </div>

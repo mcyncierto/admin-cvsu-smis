@@ -21,13 +21,13 @@
             vertical-align: middle;
         }
     </style>
-    @include('announcement.add_modal')
+    @include('photo-catalog.add_modal')
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Announcements</h1>
+                    <h1>Photo Catalog</h1>
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -37,50 +37,104 @@
         <!-- Timelime example  -->
         <div class="row">
             <div class="col-md-12">
-                @if (Auth::user()->type == 'Admin')
-                    <div class="float-right mb-3">
+                @if (Auth::user()->type == 'Admin' || Auth::user()->type == 'Cashier')
+                    <div class="float-right mb-3 mr-4">
                         <button type="button" class="btn btn-block btn-success" data-toggle="modal"
-                            data-target="#add-announcement-modal">
+                            data-target="#add-photo-catalog-modal">
                             <i class="fas fa-plus-circle"></i>
-                            Add Announcement
+                            Add Photo Catalog
                         </button>
                     </div>
                 @endif
             </div>
+
+            <div class="col-md-12">
+                <div class="timeline">
+                    <div>
+                        <i class="fas fa-search bg-blue"></i>
+                        <div class="timeline-item">
+                            <div class="timeline-header">
+                                <form action="{{ route('photo-catalog.index') }}" method="post"
+                                    id="formSearchPhotoCatalog">
+                                    @method('get')
+                                    @csrf
+                                    <div class="row" style="width:100%">
+                                        <div class="col-2">
+                                            <select id="filter_school_year" name="filter_school_year"
+                                                class="form-control-sm" style="width:100%">
+                                                <option value="" selected>Filter School Year here</option>
+                                                @foreach ($school_years as $school_year)
+                                                    <option @if ($filter_school_year == $school_year) selected @endif
+                                                        value="{{ $school_year }}">{{ $school_year }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-3">
+                                            <select id="filter_semester" name="filter_semester" class="form-control-sm"
+                                                style="width:100%">
+                                                <option value="" selected>Filter Semester here</option>
+                                                @foreach ($semesters as $semester)
+                                                    <option @if ($filter_semester == $semester['id']) selected @endif
+                                                        value="{{ $semester['id'] }}">
+                                                        {{ $semester['semester_name'] }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-3">
+                                            <input type="text" value="{{ $search }}" name="search"
+                                                class="form-control-sm" placeholder="Search" style="width:100%">
+                                        </div>
+                                        <div class="col-4" style="text-align: right">
+                                            <button name="action" value="search" type="submit"
+                                                class="btn-sm btn-primary">Search
+                                                <i class="fas fa-search"></i></button>
+                                            <button name="action" value="reset" type="submit"
+                                                class="btn-sm btn-secondary">Reset</button>
+                                            <button name="action" value="generate-pdf" type="submit"
+                                                class="btn-sm btn-outline-secondary">Export <i
+                                                    class="fas fa-download"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-12">
                 <!-- The time line -->
                 <div class="timeline">
                     <!-- timeline item -->
-                    @foreach ($announcements as $announcement)
+                    @foreach ($catalogs as $catalog)
                         <div>
-                            @if ($announcement->type == 'general')
-                                <i class="fas fa-info-circle bg-blue"></i>
-                            @else
-                                <i class="far fa-calendar-check bg-green"></i>
-                            @endif
+                            <i class="fas fa-image bg-green"></i>
                             <div class="timeline-item">
                                 <span class="time"><i class="fas fa-clock"></i>
-                                    {{ Carbon\Carbon::parse($announcement->updated_at)->diffForHumans() }}</span>
+                                    {{ Carbon\Carbon::parse($catalog->updated_at)->diffForHumans() }}</span>
                                 <div class="timeline-header">
-                                    <h3>{{ $announcement->title }}</h3>
-                                    <span>&nbsp;</span>
+                                    <h3>{{ $catalog->title }}</h3>
+                                    <h6>{{ $catalog->school_year . ' ' . Str::ucfirst($catalog->semester->semester_name) }}
+                                    </h6>
 
-                                    @if (Auth::user()->type == 'Admin')
-                                        <div class="row float-right mt-n3 mr-2">
+                                    @if (Auth::user()->type == 'Admin' || Auth::user()->type == 'Cashier')
+                                        <div class="row float-right mt-n4 mr-2">
                                             <div class="mr-2">
                                                 <a title="Edit Record" type="button"
-                                                    href="{{ route('announcements.edit', $announcement->id) }}"
+                                                    href="{{ route('photo-catalog.edit', $catalog->id) }}"
                                                     class="btn btn-block btn-outline-warning btn-sm"
                                                     style="max-width: 35px">
                                                     <i class="fas fa-pencil-alt"></i>
                                                 </a>
                                             </div>
-                                            <form action="{{ route('announcements.destroy', $announcement->id) }}"
-                                                method="post" id="formDeleteAnnouncement{{ $announcement->id }}">
+                                            <form action="{{ route('photo-catalog.destroy', $catalog->id) }}"
+                                                method="post" id="formDeleteCatalog{{ $catalog->id }}">
                                                 <button title="Delete Record" type="button"
                                                     class="btn btn-block btn-outline-danger btn-sm" style="width: 35px"
-                                                    onclick="confirmSubmit('delete', 'formDeleteAnnouncement',
-                                                '{{ $announcement->id }}')">
+                                                    onclick="confirmSubmit('delete', 'formDeleteCatalog',
+                                                '{{ $catalog->id }}')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                                 @method('delete')
@@ -91,13 +145,14 @@
                                 </div>
 
                                 <div class="timeline-body">
-                                    {!! $announcement->content !!}
+                                    {!! $catalog->description !!}
                                 </div>
 
 
                                 <!-- Carousel Modal -->
-                                <div class="modal fade" id="modal-default-{{ $announcement->id }}" data-backdrop="static"
-                                    tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="height:100%">
+                                <div class="modal fade" id="modal-default-{{ $catalog->id }}" data-backdrop="static"
+                                    tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true"
+                                    style="height:100%">
                                     <div class="modal-dialog modal-xl" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header" style="background-color:#212121">
@@ -107,34 +162,37 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body" style="height:80vh; background-color:#616161">
-                                                <div id="carouselExampleIndicators-{{ $announcement->id }}"
+                                                <div id="carouselExampleIndicators-{{ $catalog->id }}"
                                                     class="carousel slide" data-ride="carousel"
                                                     style="height: 100%; display: flex !important">
                                                     <ol class="carousel-indicators">
-                                                        @foreach ($announcement->images as $key => $val)
-                                                            <li data-target="#carouselExampleIndicators-{{ $announcement->id }}"
+                                                        @foreach ($catalog->images as $key => $val)
+                                                            <li data-target="#carouselExampleIndicators-{{ $catalog->id }}"
                                                                 data-slide-to="{{ $key }}"></li>
                                                         @endforeach
                                                     </ol>
 
                                                     <div class="carousel-inner" style="margin: auto !important;">
-                                                        @foreach ($announcement->images as $key => $val)
-                                                            <div class="carousel-item @if ($key == 0) active @endif" style="height: 70vh">
-                                                                <img class="d-block center-image" style="max-width: 100%; width: auto; height: 100%"
-                                                                    src="{{ asset('storage/announcements/' . $announcement->id . '/' . $announcement->images[$key]->image_name) }}">
+                                                        @foreach ($catalog->images as $key => $val)
+                                                            <div class="carousel-item @if ($key == 0) active @endif"
+                                                                style="height: 70vh">
+                                                                <img class="d-block center-image"
+                                                                    style="max-width: 100%; width: auto; height: 100%"
+                                                                    src="{{ asset('storage/photo-catalogs/' . $catalog->id . '/' . $catalog->images[$key]->image_name) }}">
                                                             </div>
                                                         @endforeach
                                                     </div>
 
                                                     <a class="carousel-control-prev"
-                                                        href="#carouselExampleIndicators-{{ $announcement->id }}"
+                                                        href="#carouselExampleIndicators-{{ $catalog->id }}"
                                                         role="button" data-slide="prev">
-                                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                        <span class="carousel-control-prev-icon"
+                                                            aria-hidden="true"></span>
                                                         <span class="sr-only">Previous</span>
                                                     </a>
                                                     <div>
                                                         <a class="carousel-control-next"
-                                                            href="#carouselExampleIndicators-{{ $announcement->id }}"
+                                                            href="#carouselExampleIndicators-{{ $catalog->id }}"
                                                             role="button" data-slide="next">
                                                             <span class="carousel-control-next-icon"
                                                                 aria-hidden="true"></span>
@@ -152,41 +210,42 @@
                                 </div>
 
                                 <!-- Photo Gallery -->
-                                <div data-toggle="modal" data-target="#modal-default-{{ $announcement->id }}" style="cursor: pointer;">
-                                    @if ($announcement->images)
-                                        @if (count($announcement->images) == 2)
+                                <div data-toggle="modal" data-target="#modal-default-{{ $catalog->id }}"
+                                    style="cursor: pointer;">
+                                    @if ($catalog->images)
+                                        @if (count($catalog->images) == 2)
                                             <div class="pb-4" style="text-align:center; margin: 5px">
                                                 <div class="row">
-                                                    @foreach ($announcement->images as $image)
+                                                    @foreach ($catalog->images as $image)
                                                         <div style="width:50%; float:left; padding: 5px">
                                                             <img class="img-fluid" style="width:100%"
-                                                                src="{{ asset('storage/announcements/' . $announcement->id . '/' . $image->image_name) }}">
+                                                                src="{{ asset('storage/photo-catalogs/' . $catalog->id . '/' . $image->image_name) }}">
                                                         </div>
                                                     @endforeach
                                                 </div>
                                             </div>
-                                        @elseif (count($announcement->images) >= 3)
+                                        @elseif (count($catalog->images) >= 3)
                                             <div class="pb-4" style="text-align:center; margin: 5px">
                                                 <div class="row">
                                                     <div style="width:60%; float:left; padding: 5px;display: flex;">
                                                         <img class="img-fluid" style="width:100%;margin: auto;"
-                                                            src="{{ asset('storage/announcements/' . $announcement->id . '/' . $announcement->images[0]->image_name) }}">
+                                                            src="{{ asset('storage/photo-catalogs/' . $catalog->id . '/' . $catalog->images[0]->image_name) }}">
                                                     </div>
 
                                                     <div style="width:40%; float:left; padding: 5px">
                                                         <div style="width:100%; float:top; padding: 5px">
                                                             <img class="img-fluid" style="width:100%"
-                                                                src="{{ asset('storage/announcements/' . $announcement->id . '/' . $announcement->images[1]->image_name) }}">
+                                                                src="{{ asset('storage/photo-catalogs/' . $catalog->id . '/' . $catalog->images[1]->image_name) }}">
                                                         </div>
                                                         <div
                                                             style="width:100%; float:top; padding: 5px;position: relative;;">
                                                             <img class="img-fluid"
-                                                                style="width:100%;@if (count($announcement->images) > 3) filter: brightness(50%) @endif"
-                                                                src="{{ asset('storage/announcements/' . $announcement->id . '/' . $announcement->images[2]->image_name) }}">
+                                                                style="width:100%;@if (count($catalog->images) > 3) filter: brightness(50%) @endif"
+                                                                src="{{ asset('storage/photo-catalogs/' . $catalog->id . '/' . $catalog->images[2]->image_name) }}">
 
-                                                            @if (count($announcement->images) > 3)
+                                                            @if (count($catalog->images) > 3)
                                                                 <div class="text-block">
-                                                                    <h1>+{{ count($announcement->images) - 3 }}</h1>
+                                                                    <h1>+{{ count($catalog->images) - 3 }}</h1>
                                                                 </div>
                                                             @endif
                                                         </div>
@@ -194,10 +253,10 @@
                                                 </div>
                                             </div>
                                         @else
-                                            @foreach ($announcement->images as $image)
+                                            @foreach ($catalog->images as $image)
                                                 <div class="pb-4" style="text-align:center; padding: 5px">
                                                     <img class="img-fluid"
-                                                        src="{{ asset('storage/announcements/' . $announcement->id . '/' . $image->image_name) }}">
+                                                        src="{{ asset('storage/photo-catalogs/' . $catalog->id . '/' . $image->image_name) }}">
                                                 </div>
                                             @endforeach
                                         @endif
@@ -211,7 +270,7 @@
                     <!-- timeline item -->
                 </div>
                 <div class="card-footer clearfix">
-                    <span class=" float-right">{{ $announcements->links() }}</span>
+                    <span class=" float-right">{{ $catalogs->links() }}</span>
                 </div>
                 <!-- /.col -->
             </div>

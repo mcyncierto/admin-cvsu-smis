@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Announcement extends Model
+class PhotoCatalog extends Model
 {
     use HasFactory;
 
@@ -16,11 +16,9 @@ class Announcement extends Model
      */
     protected $fillable = [
         'title',
-        'content',
-        'type',
-        'photo',
-        'created_by',
-        'updated_by',
+        'description',
+        'school_year',
+        'semester_id',
     ];
 
     /**
@@ -29,5 +27,13 @@ class Announcement extends Model
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
+    }
+
+    /**
+     * Get the semester associated with the photo catalog.
+     */
+    public function semester()
+    {
+        return $this->hasOne(Semester::class, 'id', 'semester_id');
     }
 }

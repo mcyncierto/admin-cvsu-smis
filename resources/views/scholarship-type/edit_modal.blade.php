@@ -47,8 +47,8 @@
                         <div class="form-group row">
                             <label for="lowest_gpa_allowed" class="col-md-4 col-form-label text-md-right">{{ __('Lowest GPA Allowed') }}</label>
 
-                            <div class="input-group col-md-6">
-                                <input id="lowest_gpa_allowed{{ $scholarshipType->id }}" type="text"
+                            <div class="input-group col-md-2">
+                                <input id="lowest_gpa_allowed{{ $scholarshipType->id }}" type="number"
                                     class="form-control @error('lowest_gpa_allowed'.$scholarshipType->id) is-invalid @enderror" name="lowest_gpa_allowed"
                                     value="{{ $scholarshipType->lowest_gpa_allowed }}" autocomplete="lowest_gpa_allowed">
 
@@ -63,8 +63,8 @@
                         <div class="form-group row">
                             <label for="highest_gpa_allowed" class="col-md-4 col-form-label text-md-right">{{ __('Highest GPA Allowed') }}</label>
 
-                            <div class="input-group col-md-6">
-                                <input id="highest_gpa_allowed{{ $scholarshipType->id }}" type="text"
+                            <div class="input-group col-md-2">
+                                <input id="highest_gpa_allowed{{ $scholarshipType->id }}" type="number"
                                     class="form-control @error('highest_gpa_allowed'.$scholarshipType->id) is-invalid @enderror" name="highest_gpa_allowed"
                                     value="{{ $scholarshipType->highest_gpa_allowed }}" autocomplete="highest_gpa_allowed">
 

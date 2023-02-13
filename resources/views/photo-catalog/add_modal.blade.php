@@ -1,11 +1,11 @@
-<form class="form-signin needs-validation" method="POST" action="{{ route('announcements.store') }}"
+<form class="form-signin needs-validation" method="POST" action="{{ route('photo-catalog.store') }}"
     enctype="multipart/form-data">
     @csrf
-    <div class="modal fade" id="add-announcement-modal">
+    <div class="modal fade" id="add-photo-catalog-modal">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Announcement</h4>
+                    <h4 class="modal-title">Add Photo Catalog</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -27,13 +27,54 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="content"
-                                class="col-md-4 col-form-label text-md-right">{{ __('Content') }}</label>
+                            <label for="description"
+                                class="col-md-4 col-form-label text-md-right">{{ __('Description') }}</label>
 
                             <div class="col-md-6">
-                                <textarea id="content" style="width: 500px" class="form-control" placeholder="Enter here ..."
-                                    @error('content') is-invalid @enderror name="content"></textarea>
-                                @error('content')
+                                <textarea id="description" style="width: 500px" class="form-control" placeholder="Enter here ..."
+                                    @error('description') is-invalid @enderror name="description"></textarea>
+                                @error('description')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="school_year"
+                                class="col-md-4 col-form-label text-md-right">{{ __('School Year') }} <span
+                                    style="color:red">*</span></label>
+
+                            <div class="col-md-6">
+                                <select id="school_year" class="form-control"
+                                    @error('school_year') is-invalid @enderror name="school_year" required>
+                                    @foreach ($school_years as $year)
+                                        <option>{{ $year }}</option>
+                                    @endforeach
+                                </select>
+                                @error('school_year')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="semester"
+                                class="col-md-4 col-form-label text-md-right">{{ __('Semester') }} <span
+                                style="color:red">*</span></label>
+
+                            <div class="col-md-6">
+                                <select id="semester" class="form-control" @error('semester') is-invalid @enderror
+                                    name="semester" required>
+                                    @foreach ($semesters as $sem)
+                                        <option selected value={{ $sem['id'] }}>
+                                            {{ $sem['semester_name'] }}</option>
+                                    @endforeach
+                                </select>
+                                @error('semester')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -71,7 +112,7 @@
 </form>
 <script>
     ClassicEditor
-        .create( document.querySelector( '#content' ) )
+        .create( document.querySelector( '#description' ) )
         .catch( error => {
             console.error( error );
         } );

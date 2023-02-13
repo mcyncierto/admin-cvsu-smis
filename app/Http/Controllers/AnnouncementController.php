@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AnnouncementController extends Controller
 {
@@ -16,7 +18,7 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
-        $announcements = Announcement::orderByDesc('updated_at')->paginate(10);
+        $announcements = Announcement::orderByDesc('updated_at')->with('images')->paginate(10);
 
         return view('announcement.list', ['announcements' => $announcements]);
     }
@@ -40,16 +42,23 @@ class AnnouncementController extends Controller
         $announcement = Announcement::create([
             'title' => $request->title,
             'content' => $request->content,
-            'type' => $request->type,
+            'type' => 'General',
             'created_by' => Auth::user()->id,
         ]);
 
         $photoSaveAsName = '';
         if (request()->hasFile('photo')) {
             $photo = request()->photo;
-            $photoSaveAsName = time().$announcement->id.'-photo.'.$photo->getClientOriginalExtension();
-            request()->file('photo')->storeAs('announcements', $photoSaveAsName);
-            $announcement->update(['photo' => $photoSaveAsName]);
+            foreach ($photo as $image) {
+                $photoSaveAsName = Str::uuid().'-'.time().'-'.$announcement->id.'.'.$image->getClientOriginalExtension();
+                $image->storeAs('announcements/'.$announcement->id, $photoSaveAsName);
+
+                Image::create([
+                    'image_name' => $photoSaveAsName,
+                    'imageable_id' => $announcement->id,
+                    'imageable_type' => Announcement::class,
+                ]);
+            }
         }
 
         return redirect()->back()->with('message', 'Announcement successfully added');
@@ -93,17 +102,25 @@ class AnnouncementController extends Controller
         $announcement->update([
             'title' => $request->title,
             'content' => $request->content,
-            'type' => $request->type,
+            'type' => 'General',
             'updated_by' => Auth::user()->id,
         ]);
 
         $photoSaveAsName = '';
         if (request()->hasFile('photo')) {
             $photo = request()->photo;
-            $photoSaveAsName = time().$announcement->id.'-photo.'.$photo->getClientOriginalExtension();
-            Storage::delete('announcements/'.$announcement->photo);
-            request()->file('photo')->storeAs('announcements', $photoSaveAsName);
-            $announcement->update(['photo' => $photoSaveAsName]);
+            Storage::deleteDirectory('announcements/'.$announcement->id);
+            $announcement->images()->delete();
+            foreach ($photo as $image) {
+                $photoSaveAsName = Str::uuid().'-'.time().'-'.$announcement->id.'.'.$image->getClientOriginalExtension();
+                $image->storeAs('announcements/'.$announcement->id, $photoSaveAsName);
+
+                Image::create([
+                    'image_name' => $photoSaveAsName,
+                    'imageable_id' => $announcement->id,
+                    'imageable_type' => Announcement::class,
+                ]);
+            }
         }
 
         return redirect()->route('announcements.index')->with('message', 'Announcement successfully updated!');
@@ -119,6 +136,7 @@ class AnnouncementController extends Controller
     public function destroy($id)
     {
         $announcement = Announcement::findOrFail($id)->delete();
+        Storage::deleteDirectory('announcements/'.$id);
 
         return redirect()->back()->with('message', 'Record successfully deleted');
     }

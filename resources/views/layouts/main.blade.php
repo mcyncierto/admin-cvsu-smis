@@ -140,6 +140,7 @@
                             </a>
                         </li>
 
+                        @if (Auth::user()->type != 'Cashier')
                         <li class="nav-item">
                             <a href="
                                         @if (Auth::user()->type == 'Admin') {{ route('inquiries.index') }}
@@ -155,6 +156,8 @@
                                 @endif
                             </a>
                         </li>
+                        @endif
+
                         @if (Auth::user()->type == 'Admin')
                             <li class="nav-item">
                                 <a href="{{ route('gpa-checker.create') }}"
@@ -162,6 +165,16 @@
                                         @if (\Request::is('gpa-checker*')) active @endif">
                                     <i class="fas fa-sort-numeric-up-alt"></i>
                                     <p>GPA Checker</p>
+                                </a>
+                            </li>
+                        @endif
+                        @if (Auth::user()->type == 'Admin' || Auth::user()->type == 'Cashier')
+                            <li class="nav-item">
+                                <a href="{{ route('photo-catalog.index') }}"
+                                    class="nav-link
+                                        @if (\Request::is('photo-catalog*')) active @endif">
+                                        <i class="fas fa-images"></i>
+                                    <p>Photo Catalog</p>
                                 </a>
                             </li>
                         @endif
