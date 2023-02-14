@@ -139,6 +139,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Course</th>
+                            <th>Scholarship Type(s)</th>
                             <th>School Year</th>
                             <th>Semester</th>
                             <th>GPA</th>
@@ -158,6 +159,11 @@
                                 @endif
                                 <td>{{ $record->email}}</td>
                                 <td>{{ $record->course}}</td>
+                                @if ($record->scholarship_types)
+                                    <td>{{ $record->scholarship_types}}</td>
+                                @else
+                                    <td class="text-danger"><i>{{ 'No existing record in database' }}</i></td>
+                                @endif
                                 <td>{{ $record->school_year}}</td>
                                 <td>{{ $record->semester_name}}</td>
                                 <td>{{ $record->gpa}}</td>

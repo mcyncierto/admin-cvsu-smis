@@ -48,7 +48,16 @@ class GpaCheckerController extends Controller
                             'users.gender',
                             'users.email',
                             'semesters.semester_name',
-                            'student_records.*'
+                            'student_records.*',
+                            DB::raw("(
+                                select
+                                    group_concat(distinct st.scholarship_type_name separator ', ')
+                                from scholarships s
+                                left join scholarship_types st
+                                    on s.scholarship_type_id = st.id
+                                where s.created_by = users.id
+                                group by s.created_by
+                            ) as scholarship_types"),
                         );
 
         if (!empty($request->filter_school_year)) {
